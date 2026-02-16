@@ -1,0 +1,12 @@
+name: PR Check (CI)
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Try to build image
+        run: docker build . -t test-image 

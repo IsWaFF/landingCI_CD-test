@@ -1,27 +1,17 @@
-name: Local Build and Deploy
+name: Build and Deploy on Server
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker Image locally
-        run: docker build -t my-portfolio:local .
-
-      - name: Recreate Container
+      - name: Rebuild and Restart
         run: |
-          docker stop my-portfolio || true
-          docker rm my-portfolio || true
-          docker run -d \
-            --name my-portfolio \
-            -p 8080:80 \
-            --restart always \
-            my-portfolio:local
+          docker compose up -d --build
 
-      - name: Cleanup
-        run: docker image prune -f
+          docker image prune -f

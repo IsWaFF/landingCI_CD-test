@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nginx-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: nginx
@@ -18,5 +18,17 @@ spec:
         imagePullPolicy: IfNotPresent # Важно! Чтобы Кубер не лез в интернет за образом
         ports:
         - containerPort: 80
-      # СЕКЦИИ volumes и volumeMounts БОЛЬШЕ НЕ НУЖНЫ!
-      # Твой сайт уже находится внутри образа по пути /usr/share/nginx/html
+        # --- ВОТ СЮДА ДОБАВЛЯЕМ ---
+        readinessProbe:
+          httpGet:      # Как проверять? Делать HTTP запрос
+            path: /     # Куда? На главную страницу
+            port: 80    # На какой порт?
+          initialDelaySeconds: 1 # Подождать 5 сек после старта, прежде чем проверять
+          periodSeconds: 1       # Проверять каждые 5 секунд
+        
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2 # Даем приложению больше времени «раскочегариться»
+          periodSeconds: 10

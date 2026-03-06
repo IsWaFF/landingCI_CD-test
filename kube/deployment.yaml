@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: portfolio-site
+        image: my-portfolio:v1 # Твой новый образ!
+        imagePullPolicy: IfNotPresent # Важно! Чтобы Кубер не лез в интернет за образом
+        ports:
+        - containerPort: 80
+      # СЕКЦИИ volumes и volumeMounts БОЛЬШЕ НЕ НУЖНЫ!
+      # Твой сайт уже находится внутри образа по пути /usr/share/nginx/html
